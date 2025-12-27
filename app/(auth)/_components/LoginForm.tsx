@@ -4,9 +4,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { LoginData, loginSchema } from "../schema";
 
 export default function LoginForm() {
+    const router = useRouter();
+    const [pending, startTransition] = useTransition();
+
     const {
         register,
         handleSubmit,
@@ -16,20 +20,25 @@ export default function LoginForm() {
         mode: "onSubmit",
     });
 
-    const [pending, setTransition] = useTransition();
-
     const submit = async (values: LoginData) => {
-        setTransition(async () => {
+        startTransition(async () => {
+            // simulate API call
             await new Promise((r) => setTimeout(r, 1000));
+
+            console.log("login", values);
+
+            // ✅ Redirect to dashboard after login
+            router.push("/auth/dashboard");
         });
-        console.log("login", values);
     };
 
     return (
         <form
             onSubmit={handleSubmit(submit)}
-            className="space-y-5"
+            className="space-y-5 rounded-2xl bg-black/60 backdrop-blur-xl p-8 shadow-2xl"
         >
+            
+
             {/* Email */}
             <div className="space-y-1">
                 <label className="text-sm text-gray-300">Email</label>
