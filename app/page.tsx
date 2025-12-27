@@ -7,7 +7,7 @@ export default function HomePage() {
         href="/dashboard"
         className="rounded-md bg-blue-600 px-6 py-3 text-white"
       >
-        Go to Dashboard
+        Continue...
       </Link>
     </div>
   );
