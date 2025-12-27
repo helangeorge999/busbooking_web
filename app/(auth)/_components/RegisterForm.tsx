@@ -37,11 +37,11 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        <div className="flex min-h-screen items-center justify-center ">
   <div className="w-full max-w-md rounded-2xl bg-white p-10 shadow-xl">
     {/* Header */}
     <h1 className="mb-2 text-center text-2xl font-semibold text-gray-900">
-      Create Your Account
+      Create An Account
     </h1>
     <p className="mb-8 text-center text-sm text-gray-500">
       Join us and book your bus tickets easily

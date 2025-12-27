@@ -5,7 +5,7 @@ export default function DashboardPage() {
         <div className="relative min-h-screen">
             {/* Background Image */}
             <Image
-                src="/images/buses.png"
+                src="/images/busss.jpg"
                 alt="Bus background"
                 fill
                 priority

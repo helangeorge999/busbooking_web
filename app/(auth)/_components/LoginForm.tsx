@@ -29,18 +29,21 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black">
-
-      {/* DARK CARD */}
-      <div className="w-full max-w-md rounded-2xl bg-gradient-to-b
-                      from-black to-gray-900 px-6 py-6 shadow-2xl">
-
+    <div
+      className="flex min-h-screen items-center justify-center bg-cover bg-center"
+    //   style={{ backgroundImage: "url('/images/busss.jpg')" }} // 
+    >
+      {/* TRANSPARENT DARK CARD */}
+      <div
+        className="w-full max-w-md rounded-2xl px-6 py-6 shadow-2xl
+                   bg-black/70 backdrop-blur-md"
+      >
         {/* HEADER */}
         <div className="mb-3 text-center">
           <h1 className="text-2xl font-semibold text-white">
             Welcome back
           </h1>
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-gray-300">
             Log in to your account
           </p>
         </div>
@@ -107,7 +110,7 @@ export default function LoginForm() {
 
             {/* SIGNUP */}
             <p className="pt-2 text-center text-xs text-gray-600">
-              Don&apos;t have an account?
+              Don't have an account?
             </p>
 
             <Link
