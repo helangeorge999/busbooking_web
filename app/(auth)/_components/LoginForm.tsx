@@ -8,91 +8,110 @@ import { useRouter } from "next/navigation";
 import { LoginData, loginSchema } from "../schema";
 
 export default function LoginForm() {
-    const router = useRouter();
-    const [pending, startTransition] = useTransition();
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<LoginData>({
-        resolver: zodResolver(loginSchema),
-        mode: "onSubmit",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onSubmit",
+  });
+
+  const submit = async (values: LoginData) => {
+    startTransition(async () => {
+      await new Promise((r) => setTimeout(r, 1000));
+      console.log("login", values);
+      router.push("/auth/dashboard");
     });
+  };
 
-    const submit = async (values: LoginData) => {
-        startTransition(async () => {
-            // simulate API call
-            await new Promise((r) => setTimeout(r, 1000));
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-black">
 
-            console.log("login", values);
+      {/* DARK CARD */}
+      <div className="w-full max-w-md rounded-2xl bg-gradient-to-b
+                      from-black to-gray-900 px-6 py-6 shadow-2xl">
 
-            // ✅ Redirect to dashboard after login
-            router.push("/auth/dashboard");
-        });
-    };
+        {/* WHITE FORM CARD */}
+        <div className="mt-2 rounded-xl bg-white p-5">
+          <form onSubmit={handleSubmit(submit)} className="space-y-4">
 
-    return (
-        <form
-            onSubmit={handleSubmit(submit)}
-            className="space-y-5 rounded-2xl bg-black/60 backdrop-blur-xl p-8 shadow-2xl"
-        >
-            
-
-            {/* Email */}
-            <div className="space-y-1">
-                <label className="text-sm text-gray-300">Email</label>
-                <input
-                    {...register("email")}
-                    type="email"
-                    placeholder="you@example.com"
-                    className="h-10 w-full rounded-md bg-blue-50 px-3 text-sm text-gray-900
-                               outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.email?.message && (
-                    <p className="text-xs text-red-400">
-                        {errors.email.message}
-                    </p>
-                )}
+            {/* EMAIL */}
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                ✉️
+              </span>
+              <input
+                {...register("email")}
+                type="text"
+                placeholder="Email or Phone Number"
+                className="h-11 w-full rounded-md border border-gray-300
+                           pl-10 text-sm text-black
+                           focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+              {errors.email?.message && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
-            {/* Password */}
-            <div className="space-y-1">
-                <label className="text-sm text-gray-300">Password</label>
-                <input
-                    {...register("password")}
-                    type="password"
-                    placeholder="••••••••"
-                    className="h-10 w-full rounded-md bg-blue-50 px-3 text-sm text-gray-900
-                               outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.password?.message && (
-                    <p className="text-xs text-red-400">
-                        {errors.password.message}
-                    </p>
-                )}
+            {/* PASSWORD */}
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                🔒
+              </span>
+              <input
+                {...register("password")}
+                type="password"
+                placeholder="Password"
+                className="h-11 w-full rounded-md border border-gray-300
+                           pl-10 text-sm text-black
+                           focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+              {errors.password?.message && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
-            {/* Login Button */}
+            {/* LOGIN BUTTON */}
             <button
-                type="submit"
-                disabled={isSubmitting || pending}
-                className="h-9 w-full rounded-md bg-blue-600 text-sm font-medium text-white
-                           hover:bg-blue-700 disabled:opacity-60"
+              type="submit"
+              disabled={isSubmitting || pending}
+              className="h-11 w-full rounded-md bg-blue-600
+                         text-sm font-medium text-white
+                         hover:bg-blue-700 disabled:opacity-60"
             >
-                {isSubmitting || pending ? "Logging in..." : "Log in"}
+              {isSubmitting || pending ? "Logging in..." : "Login"}
             </button>
 
-            {/* Signup Link */}
-            <div className="text-center text-sm text-gray-400">
-                Don&apos;t have an account?{" "}
-                <Link
-                    href="/register"
-                    className="text-blue-500 hover:underline"
-                >
-                    Sign up
-                </Link>
-            </div>
-        </form>
-    );
+            {/* FORGOT PASSWORD */}
+            <p className="text-center text-xs text-gray-600 hover:underline cursor-pointer">
+              Forgot password?
+            </p>
+
+            {/* SIGNUP */}
+            <p className="pt-2 text-center text-xs text-gray-600">
+              Don&apos;t have an account?
+            </p>
+
+            <Link
+              href="/register"
+              className="block h-11 w-full rounded-md border border-gray-400
+                         text-center text-sm leading-[44px]
+                         text-black hover:bg-gray-100"
+            >
+              Create account
+            </Link>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }
