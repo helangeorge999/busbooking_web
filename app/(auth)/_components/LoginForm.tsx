@@ -24,7 +24,7 @@ export default function LoginForm() {
     startTransition(async () => {
       await new Promise((r) => setTimeout(r, 1000));
       console.log("login", values);
-      router.push("/auth/dashboard");
+      router.push("/dashboard");
     });
   };
 
@@ -39,7 +39,7 @@ export default function LoginForm() {
                    bg-black/70 backdrop-blur-md"
       >
         {/* HEADER */}
-        <div className="mb-3 text-center">
+        <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-white">
             Welcome back
           </h1>
