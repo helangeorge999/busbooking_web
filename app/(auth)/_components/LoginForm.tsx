@@ -35,6 +35,16 @@ export default function LoginForm() {
       <div className="w-full max-w-md rounded-2xl bg-gradient-to-b
                       from-black to-gray-900 px-6 py-6 shadow-2xl">
 
+        {/* HEADER */}
+        <div className="mb-3 text-center">
+          <h1 className="text-2xl font-semibold text-white">
+            Welcome back
+          </h1>
+          <p className="mt-1 text-sm text-gray-400">
+            Log in to your account
+          </p>
+        </div>
+
         {/* WHITE FORM CARD */}
         <div className="mt-2 rounded-xl bg-white p-5">
           <form onSubmit={handleSubmit(submit)} className="space-y-4">
