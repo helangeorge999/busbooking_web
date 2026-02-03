@@ -1,42 +1,51 @@
-"use server"
-
-import { cookies } from "next/headers"
+// lib/cookie.ts
+import { cookies } from "next/headers";
 
 interface UserData {
-    _id: string;
-    email: string;
-    username: string;
-    role: string;
-    createdAt: string;
-    updatedAt: string;
-    [key: string]: any;
-}
-export const setAuthToken = async (token: string) => {
-    const cookieStore = await cookies();
-    cookieStore.set({
-        name: 'auth_token',
-        value: token,
-    })
-}
-export const getAuthToken = async () => {
-    const cookieStore = await cookies();
-    return cookieStore.get('auth_token')?.value || null;
-}
-export const setUserData = async (userData: UserData) => {
-    const cookieStore = await cookies();
-    cookieStore.set({
-        name: 'user_data',
-        value: JSON.stringify(userData),
-    })
-}
-export const getUserData = async (): Promise<UserData | null> => {
-    const cookieStore = await cookies();
-    const userData = cookieStore.get('user_data')?.value || null;
-    return userData ? JSON.parse(userData) : null;
+  _id: string;
+  email: string;
+  username: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+  [key: string]: any;
 }
 
+export const setAuthToken = async (token: string) => {
+  const cookieStore = await cookies();
+  cookieStore.set({
+    name: "auth_token",
+    value: token,
+    httpOnly: true,
+    path: "/",
+    // secure: process.env.NODE_ENV === "production",
+    // sameSite: "strict",
+  });
+};
+
+export const getAuthToken = async () => {
+  const cookieStore = await cookies();
+  return cookieStore.get("auth_token")?.value || null;
+};
+
+export const setUserData = async (userData: UserData) => {
+  const cookieStore = await cookies();
+  cookieStore.set({
+    name: "user_data",
+    value: JSON.stringify(userData),
+    httpOnly: true,
+    path: "/",
+  });
+};
+
+export const getUserData = async (): Promise<UserData | null> => {
+  const cookieStore = await cookies();
+  const userDataStr = cookieStore.get("user_data")?.value || null;
+  return userDataStr ? JSON.parse(userDataStr) : null;
+};
+
 export const clearAuthCookies = async () => {
-    const cookieStore = await cookies();
-    cookieStore.delete('auth_token');
-    cookieStore.delete('user_data');
-}
+  const cookieStore = await cookies();
+  cookieStore.delete("auth_token", { path: "/" });
+  cookieStore.delete("user_data",   { path: "/" });
+};

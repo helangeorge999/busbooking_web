@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { LoginData, loginSchema } from "../schema";
+import { loginAction } from "@/lib/actions/auth-action";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -22,23 +23,23 @@ export default function LoginForm() {
 
   const submit = async (values: LoginData) => {
     startTransition(async () => {
-      await new Promise((r) => setTimeout(r, 1000));
-      console.log("login", values);
-      router.push("/dashboard");
+      const result = await loginAction(values);
+
+      if (!result.success) {
+        alert(result.message || "Login failed");
+        return;
+      }
+
+      router.push("/user/dashboard");
     });
   };
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center bg-cover bg-center"
-    //   style={{ backgroundImage: "url('/images/busss.jpg')" }} // 
-    >
-      {/* TRANSPARENT DARK CARD */}
+    <div className="flex min-h-screen items-center justify-center bg-cover bg-center">
       <div
         className="w-full max-w-md rounded-2xl px-6 py-6 shadow-2xl
                    bg-black/70 backdrop-blur-md"
       >
-        {/* HEADER */}
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-white">
             Welcome back
@@ -48,7 +49,6 @@ export default function LoginForm() {
           </p>
         </div>
 
-        {/* WHITE FORM CARD */}
         <div className="mt-2 rounded-xl bg-white p-5">
           <form onSubmit={handleSubmit(submit)} className="space-y-4">
 
@@ -103,12 +103,10 @@ export default function LoginForm() {
               {isSubmitting || pending ? "Logging in..." : "Login"}
             </button>
 
-            {/* FORGOT PASSWORD */}
             <p className="text-center text-xs text-gray-600 hover:underline cursor-pointer">
               Forgot password?
             </p>
 
-            {/* SIGNUP */}
             <p className="pt-2 text-center text-xs text-gray-600">
               Don't have an account?
             </p>
