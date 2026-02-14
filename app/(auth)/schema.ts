@@ -14,8 +14,7 @@ export const registerSchema = z
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().min(1, "Email is required").email("Enter a valid email"),
     dob: z.string().min(1, "Date of birth is required"),
-    gender: z.enum(["male", "female"], { errorMap: () => ({ message: "Select a gender" }) }),
-    phone: z.string().min(7, "Enter a valid phone number"),
+    gender: z.enum(["male", "female"], { error: "Select a gender" }),    phone: z.string().min(7, "Enter a valid phone number"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm your password"),
   })

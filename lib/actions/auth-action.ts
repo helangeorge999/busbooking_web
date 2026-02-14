@@ -9,7 +9,10 @@ import { setAuthToken, setUserData } from "@/lib/cookie";
 export const loginAction = async (values: {
   email: string;
   password: string;
-}) => {
+}): Promise<
+  | { success: true;  data: any; role: "user" }
+  | { success: false; message: string }
+> => {
   try {
     const res = await axios.post(API.AUTH.LOGIN, values);
     const { token, user } = res.data;
@@ -17,11 +20,7 @@ export const loginAction = async (values: {
     await setAuthToken(token);
     await setUserData(user);
 
-    return {
-      success: true,
-      data: user,
-      role: "user" as const,
-    };
+    return { success: true, data: user, role: "user" };
   } catch (error: any) {
     return {
       success: false,
@@ -37,19 +36,18 @@ export const loginAction = async (values: {
 export const adminLoginAction = async (values: {
   email: string;
   password: string;
-}) => {
+}): Promise<
+  | { success: true;  data: any; role: "admin" }
+  | { success: false; message: string }
+> => {
   try {
     const res = await axios.post(API.ADMIN_AUTH.LOGIN, values);
-    const { token, user } = res.data; // user = { id, name, email, role: "admin" }
+    const { token, user } = res.data;
 
     await setAuthToken(token);
     await setUserData(user);
 
-    return {
-      success: true,
-      data: user,
-      role: "admin" as const,
-    };
+    return { success: true, data: user, role: "admin" };
   } catch (error: any) {
     return {
       success: false,
@@ -99,8 +97,8 @@ export const handleWhoAmI = async () => {
 export const handleLogout = async () => {
   try {
     const cookieStore = await cookies();
-    cookieStore.delete("auth_token", { path: "/" });
-    cookieStore.delete("user_data", { path: "/" });
+    cookieStore.delete({ name: "auth_token", path: "/" });
+    cookieStore.delete({ name: "user_data",  path: "/" });
     return { success: true };
   } catch (err: any) {
     console.error("Logout error:", err);
