@@ -1,21 +1,16 @@
-import { handleWhoAmI } from "@/lib/actions/auth-action";
-import { notFound } from "next/navigation";
-import UpdateUserForm from "../_components/UpdateProfile";
+import { getUserData } from "@/lib/cookie";
+import ProfileForm from "./_components/ProfileForm";
 
-export default async function Page() {
-  const result = await handleWhoAmI();
-
-  if (!result.success) {
-    throw new Error("Error fetching user data");
-  }
-
-  if (!result.data) {
-    notFound();
-  }
+export default async function ProfilePage() {
+  const user = await getUserData();
 
   return (
-    <div>
-      <UpdateUserForm user={result.data} />
+    <div className="mx-auto max-w-lg space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Profile</h1>
+        <p className="text-sm text-gray-500">Update your personal information</p>
+      </div>
+      <ProfileForm user={user} />
     </div>
   );
 }

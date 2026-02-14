@@ -1,15 +1,4 @@
-// lib/cookie.ts
 import { cookies } from "next/headers";
-
-interface UserData {
-  _id: string;
-  email: string;
-  username: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-  [key: string]: any;
-}
 
 export const setAuthToken = async (token: string) => {
   const cookieStore = await cookies();
@@ -18,17 +7,15 @@ export const setAuthToken = async (token: string) => {
     value: token,
     httpOnly: true,
     path: "/",
-    // secure: process.env.NODE_ENV === "production",
-    // sameSite: "strict",
   });
 };
 
-export const getAuthToken = async () => {
+export const getAuthToken = async (): Promise<string | null> => {
   const cookieStore = await cookies();
   return cookieStore.get("auth_token")?.value || null;
 };
 
-export const setUserData = async (userData: UserData) => {
+export const setUserData = async (userData: any) => {
   const cookieStore = await cookies();
   cookieStore.set({
     name: "user_data",
@@ -38,15 +25,14 @@ export const setUserData = async (userData: UserData) => {
   });
 };
 
-export const getUserData = async (): Promise<UserData | null> => {
+export const getUserData = async (): Promise<any | null> => {
   const cookieStore = await cookies();
-  const userDataStr = cookieStore.get("user_data")?.value || null;
-  return userDataStr ? JSON.parse(userDataStr) : null;
+  const str = cookieStore.get("user_data")?.value;
+  return str ? JSON.parse(str) : null;
 };
 
 export const clearAuthCookies = async () => {
   const cookieStore = await cookies();
-  // delete() only accepts a key string OR a single options object — not both
   cookieStore.delete({ name: "auth_token", path: "/" });
   cookieStore.delete({ name: "user_data",  path: "/" });
 };

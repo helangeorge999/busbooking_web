@@ -1,57 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthToken, getUserData } from "@/lib/cookie";
 
-const publicRoutes = ["/login", "/register", "/forget-password", "/reset-password"];
-const adminRoutes = ["/admin"];
-const userRoutes = ["/user"];
+export function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-export default async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const token       = req.cookies.get("auth_token")?.value;
+  const userDataRaw = req.cookies.get("user_data")?.value;
 
-  const token = await getAuthToken();
-  const user = token ? await getUserData() : null;
-
-  const isPublicRoute = publicRoutes.some(route =>
-    pathname.startsWith(route)
-  );
-  const isAdminRoute = adminRoutes.some(route =>
-    pathname.startsWith(route)
-  );
-  const isUserRoute = userRoutes.some(route =>
-    pathname.startsWith(route)
-  );
-
-  // 🚫 Not logged in → redirect to login
-  if (!token && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  let role: string | undefined;
+  try {
+    if (userDataRaw) {
+      const userData = JSON.parse(decodeURIComponent(userDataRaw));
+      role = userData?.role;
+    }
+  } catch {
+    role = undefined;
   }
 
-  // 🔐 Role based access
-  if (token && user) {
-    if (isAdminRoute && user.role !== "admin") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  const isLoggedIn = !!token;
 
-    if (isUserRoute && !["user", "admin"].includes(user.role)) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  // ── Unauthenticated user hitting protected routes ─────────────────────────
+  if (!isLoggedIn) {
+    if (pathname.startsWith("/user"))  return NextResponse.redirect(new URL("/login", req.url));
+    if (pathname.startsWith("/admin") && pathname !== "/admin/login")
+      return NextResponse.redirect(new URL("/admin/login", req.url));
+    return NextResponse.next();
   }
 
-  // 🚪 Logged-in users shouldn't access auth pages
-  if (isPublicRoute && token) {
-    return NextResponse.redirect(
-      new URL("/user/dashboard", request.url)
-    );
+  // ── Authenticated: block wrong-role access ────────────────────────────────
+
+  // Admin trying to visit user login / register
+  if (role === "admin" && (pathname === "/login" || pathname === "/register")) {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+  }
+
+  // Regular user trying to visit /admin/*
+  if (role === "user" && pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/user/dashboard", req.url));
+  }
+
+  // Regular user already logged in hitting /login or /register
+  if (role === "user" && (pathname === "/login" || pathname === "/register")) {
+    return NextResponse.redirect(new URL("/user/dashboard", req.url));
+  }
+
+  // Admin already logged in hitting /admin/login
+  if (role === "admin" && pathname === "/admin/login") {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/user/:path*",
-    "/login",
-    "/register",
-  ],
+  matcher: ["/user/:path*", "/admin/:path*", "/login", "/register"],
 };

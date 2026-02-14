@@ -6,174 +6,177 @@ import { RegisterData, registerSchema } from "../schema";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaUser, FaCalendarAlt, FaVenusMars, FaPhoneAlt, FaLock } from "react-icons/fa";
 import { registerAction } from "@/lib/actions/auth-action";
+import { toast } from "react-toastify";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterData>({
     resolver: zodResolver(registerSchema),
     mode: "onSubmit",
   });
 
-  const submit = async (values: RegisterData) => {
+  const submit = (values: RegisterData) => {
     startTransition(async () => {
       const result = await registerAction(values);
-
       if (!result.success) {
-        alert(result.message || "Registration failed");
+        toast.error(result.message || "Registration failed");
         return;
       }
-
+      toast.success("Account created! Please sign in.");
       router.push("/login");
     });
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl bg-white p-10 shadow-xl">
-        <h1 className="mb-2 text-center text-2xl font-semibold text-gray-900">
-          Create An Account
-        </h1>
-        <p className="mb-8 text-center text-sm text-gray-500">
-          Join us and book your bus tickets easily
-        </p>
-
-        <form onSubmit={handleSubmit(submit)} className="space-y-4">
-
-          {/* Full Name */}
-          <div className="relative">
-            <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              {...register("name")}
-              placeholder="Full Name"
-              className="h-11 w-full rounded-lg border border-gray-300 pl-10 text-sm text-gray-900
-                         placeholder-gray-400 focus:border-green-600 focus:ring-1 focus:ring-green-600"
-            />
-            {errors.name?.message && (
-              <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
-            )}
+    <div className="flex min-h-screen items-center justify-center px-4 py-10">
+      <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-2xl">
+        {/* Header */}
+        <div className="bg-green-700 px-8 py-8 text-center">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-white/20">
+            <span className="text-2xl">🚌</span>
           </div>
+          <h1 className="text-2xl font-bold text-white">Create Account</h1>
+          <p className="mt-1 text-sm text-green-100">Join us and book your bus tickets easily</p>
+        </div>
 
-          {/* Email */}
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">✉️</span>
-            <input
-              {...register("email")}
-              type="email"
-              placeholder="Email Address"
-              className="h-11 w-full rounded-lg border border-gray-300 pl-10 text-sm text-gray-900
-                         placeholder-gray-400 focus:border-green-600 focus:ring-1 focus:ring-green-600"
-            />
-            {errors.email?.message && (
-              <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
-            )}
-          </div>
+        {/* Form */}
+        <div className="bg-white px-8 py-8">
+          <form onSubmit={handleSubmit(submit)} className="space-y-4">
 
-          {/* DOB — now registered */}
-          <div className="relative">
-            <FaCalendarAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              {...register("dob")}
-              type="date"
-              className="h-11 w-full rounded-lg border border-gray-300 pl-10 text-sm text-gray-700
-                         focus:border-green-600 focus:ring-1 focus:ring-green-600"
-            />
-            {errors.dob?.message && (
-              <p className="mt-1 text-xs text-red-500">{errors.dob.message}</p>
-            )}
-          </div>
+            {/* Full Name */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Full Name</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">👤</span>
+                <input
+                  {...register("name")}
+                  placeholder="John Doe"
+                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                />
+              </div>
+              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+            </div>
 
-          {/* Gender — now registered */}
-          <div className="relative">
-            <FaVenusMars className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <select
-              {...register("gender")}
-              className="h-11 w-full rounded-lg border border-gray-300 pl-10 text-sm text-gray-700
-                         focus:border-green-600 focus:ring-1 focus:ring-green-600"
+            {/* Email */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Email Address</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">✉️</span>
+                <input
+                  {...register("email")}
+                  type="email"
+                  placeholder="you@example.com"
+                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                />
+              </div>
+              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
+            </div>
+
+            {/* DOB */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Date of Birth</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">📅</span>
+                <input
+                  {...register("dob")}
+                  type="date"
+                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm text-gray-700
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                />
+              </div>
+              {errors.dob && <p className="mt-1 text-xs text-red-500">{errors.dob.message}</p>}
+            </div>
+
+            {/* Gender */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Gender</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">⚧</span>
+                <select
+                  {...register("gender")}
+                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm text-gray-700
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              {errors.gender && <p className="mt-1 text-xs text-red-500">{errors.gender.message}</p>}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Phone Number</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">📞</span>
+                <input
+                  {...register("phone")}
+                  type="tel"
+                  placeholder="+91 98765 43210"
+                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                />
+              </div>
+              {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone.message}</p>}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Password</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔒</span>
+                <input
+                  {...register("password")}
+                  type="password"
+                  placeholder="••••••••"
+                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                />
+              </div>
+              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Confirm Password</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔒</span>
+                <input
+                  {...register("confirmPassword")}
+                  type="password"
+                  placeholder="••••••••"
+                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                />
+              </div>
+              {errors.confirmPassword && <p className="mt-1 text-xs text-red-500">{errors.confirmPassword.message}</p>}
+            </div>
+
+            <button
+              type="submit"
+              disabled={pending}
+              className="mt-2 h-11 w-full rounded-lg bg-green-600 text-sm font-semibold
+                         text-white transition hover:bg-green-700 disabled:opacity-60"
             >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-            {errors.gender?.message && (
-              <p className="mt-1 text-xs text-red-500">{errors.gender.message}</p>
-            )}
-          </div>
+              {pending ? "Creating Account…" : "Create Account"}
+            </button>
 
-          {/* Phone — now registered */}
-          <div className="relative">
-            <FaPhoneAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              {...register("phone")}
-              type="tel"
-              placeholder="Phone Number"
-              className="h-11 w-full rounded-lg border border-gray-300 pl-10 text-sm text-gray-900
-                         placeholder-gray-400 focus:border-green-600 focus:ring-1 focus:ring-green-600"
-            />
-            {errors.phone?.message && (
-              <p className="mt-1 text-xs text-red-500">{errors.phone.message}</p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div className="relative">
-            <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="Password"
-              className="h-11 w-full rounded-lg border border-gray-300 pl-10 text-sm text-gray-900
-                         placeholder-gray-400 focus:border-green-600 focus:ring-1 focus:ring-green-600"
-            />
-            {errors.password?.message && (
-              <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div className="relative">
-            <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              {...register("confirmPassword")}
-              type="password"
-              placeholder="Confirm Password"
-              className="h-11 w-full rounded-lg border border-gray-300 pl-10 text-sm text-gray-900
-                         placeholder-gray-400 focus:border-green-600 focus:ring-1 focus:ring-green-600"
-            />
-            {errors.confirmPassword?.message && (
-              <p className="mt-1 text-xs text-red-500">{errors.confirmPassword.message}</p>
-            )}
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={isSubmitting || pending}
-            className="mt-4 h-11 w-full rounded-lg bg-green-600 text-sm font-semibold
-                       text-white hover:bg-green-700 disabled:opacity-60"
-          >
-            {isSubmitting || pending ? "Creating..." : "Create Account"}
-          </button>
-
-          <p className="mt-4 text-center text-sm text-gray-500">
-            Already have an account?
-          </p>
-          <Link
-            href="/login"
-            className="block w-full rounded-lg border border-gray-300 py-2
-                       text-center text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Sign In
-          </Link>
-
-        </form>
+            <p className="text-center text-sm text-gray-500">Already have an account?</p>
+            <Link
+              href="/login"
+              className="block h-11 w-full rounded-lg border border-gray-300 text-center
+                         text-sm font-medium leading-[44px] text-gray-700 hover:bg-gray-50"
+            >
+              Sign In
+            </Link>
+          </form>
+        </div>
       </div>
     </div>
   );

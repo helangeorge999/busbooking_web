@@ -1,65 +1,53 @@
-"use client"
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { clearAuthCookies, getAuthToken, getUserData } from "@/lib/cookie";
+"use client";
+
+import { createContext, useContext, useState } from "react";
+import { handleLogout } from "@/lib/actions/auth-action";
 import { useRouter } from "next/navigation";
 
-interface AuthContextProps {
-    isAuthenticated: boolean;
-    setIsAuthenticated: (value: boolean) => void;
-    user: any;
-    setUser: (user: any) => void;
-    logout: () => Promise<void>;
-    loading: boolean;
-    checkAuth: () => Promise<void>;
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "user" | "admin";
+  phone?: string;
+  gender?: string;
+  dob?: string;
+  photoUrl?: string;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
-    const checkAuth = async () => {
-        try {
-            const token = await getAuthToken();
-            const user = await getUserData();
-            setUser(user);
-            setIsAuthenticated(!!token);
-        } catch (err) {
-            setIsAuthenticated(false);
-            setUser(null);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
-    const logout = async () => {
-        try {
-            await clearAuthCookies();
-            setIsAuthenticated(false);
-            setUser(null);
-            router.push("/login");
-        } catch (error) {
-            console.error("Logout failed:", error);
-        }
-    }
-
-    return (
-        <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser, logout, loading, checkAuth }}>
-            {children}
-        </AuthContext.Provider>
-    );
+interface AuthContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  logout: () => Promise<void>;
 }
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
-};
 
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  setUser: () => {},
+  logout: async () => {},
+});
+
+export function AuthProvider({
+  children,
+  initialUser,
+}: {
+  children: React.ReactNode;
+  initialUser?: User | null;
+}) {
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
+  const router = useRouter();
+
+  const logout = async () => {
+    await handleLogout();
+    setUser(null);
+    router.push("/login");
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, setUser, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => useContext(AuthContext);

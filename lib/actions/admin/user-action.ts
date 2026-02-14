@@ -9,7 +9,11 @@ export const handleGetAllUsers = async () => {
     const res = await axios.get(API.ADMIN.USERS);
     return { success: true, data: res.data.data };
   } catch (error: any) {
-    return { success: false, data: [], message: error.response?.data?.message || "Failed to fetch users" };
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Failed to fetch users",
+    };
   }
 };
 

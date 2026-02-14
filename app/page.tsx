@@ -1,14 +1,30 @@
-import Link from "next/link";
+import type { Metadata } from "next";
+import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AuthProvider } from "./context/AuthContext";
+import { getUserData } from "@/lib/cookie";
 
-export default function HomePage() {
+export const metadata: Metadata = {
+  title: "BusBooking",
+  description: "Book your bus tickets easily",
+};
+
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const userData = await getUserData();
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Link
-        href="/dashboard"
-        className="rounded-md bg-blue-600 px-6 py-3 text-white"
-      >
-        Continue...
-      </Link>
-    </div>
+    <html lang="en">
+      <body className="min-h-screen w-full bg-gray-50 dark:bg-gray-950">
+        <AuthProvider initialUser={userData}>
+          {children}
+          <ToastContainer position="top-right" autoClose={3000} />
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
