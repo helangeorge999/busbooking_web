@@ -46,6 +46,7 @@ export const getUserData = async (): Promise<UserData | null> => {
 
 export const clearAuthCookies = async () => {
   const cookieStore = await cookies();
-  cookieStore.delete("auth_token", { path: "/" });
-  cookieStore.delete("user_data",   { path: "/" });
+  // delete() only accepts a key string OR a single options object — not both
+  cookieStore.delete({ name: "auth_token", path: "/" });
+  cookieStore.delete({ name: "user_data",  path: "/" });
 };

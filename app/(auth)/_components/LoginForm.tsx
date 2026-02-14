@@ -30,7 +30,12 @@ export default function LoginForm() {
         return;
       }
 
-      router.push("/user/dashboard");
+      // Redirect based on role
+      if (result.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/user/dashboard");
+      }
     });
   };
 
@@ -41,12 +46,8 @@ export default function LoginForm() {
                    bg-black/70 backdrop-blur-md"
       >
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-semibold text-white">
-            Welcome back
-          </h1>
-          <p className="mt-1 text-sm text-gray-300">
-            Log in to your account
-          </p>
+          <h1 className="text-2xl font-semibold text-white">Welcome back</h1>
+          <p className="mt-1 text-sm text-gray-300">Log in to your account</p>
         </div>
 
         <div className="mt-2 rounded-xl bg-white p-5">
@@ -54,29 +55,23 @@ export default function LoginForm() {
 
             {/* EMAIL */}
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                ✉️
-              </span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">✉️</span>
               <input
                 {...register("email")}
                 type="text"
-                placeholder="Email or Phone Number"
+                placeholder="Email Address"
                 className="h-11 w-full rounded-md border border-gray-300
                            pl-10 text-sm text-black
                            focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               {errors.email?.message && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.email.message}
-                </p>
+                <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
               )}
             </div>
 
             {/* PASSWORD */}
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                🔒
-              </span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">🔒</span>
               <input
                 {...register("password")}
                 type="password"
@@ -86,9 +81,7 @@ export default function LoginForm() {
                            focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               {errors.password?.message && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.password.message}
-                </p>
+                <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
               )}
             </div>
 
