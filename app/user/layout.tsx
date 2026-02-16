@@ -1,16 +1,12 @@
-import Header from "./_components/Header";
-import Sidebar from "./_components/Sidebar";
+import Header from "./_components/UserHeader";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-950">
-      <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
+export default function Layout({ children }: { children: React.ReactNode }) {
+    return (
+        <section>
+            <Header />
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                {children}
+            </main>
+        </section>
+    );
 }

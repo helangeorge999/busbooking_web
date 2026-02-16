@@ -14,8 +14,8 @@ export default async function AdminDashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
-          { label: "Total Users",    value: users.length, icon: "👥", color: "bg-blue-50 text-blue-700"   },
-          { label: "Active Routes",  value: 12,           icon: "🛣️", color: "bg-green-50 text-green-700" },
+          { label: "Total Users",    value: users.length, icon: "👥", color: "bg-blue-50 text-blue-700"    },
+          { label: "Active Routes",  value: 12,           icon: "🛣️", color: "bg-green-50 text-green-700"  },
           { label: "Bookings Today", value: 0,            icon: "🎫", color: "bg-yellow-50 text-yellow-700" },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
