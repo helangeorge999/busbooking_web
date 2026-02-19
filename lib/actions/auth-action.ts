@@ -78,8 +78,15 @@ export const handleLogout = async () => {
 
 export const handleUpdateProfile = async (values: any) => {
   try {
-    const res = await axios.patch(API.USER.UPDATE_PROFILE, values);
-    if (res.data?.user) await setUserData(res.data.user);
+    const { userId, ...profileData } = values;
+    
+    // Send userId as query parameter, not in body
+    const res = await axios.patch(
+      `${API.USER.UPDATE_PROFILE}?userId=${userId}`,
+      profileData
+    );
+    
+    if (res.data?.data) await setUserData(res.data.data);
     return { success: true, data: res.data };
   } catch (error: any) {
     return {

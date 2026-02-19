@@ -1,4 +1,5 @@
 import { getUserData } from "@/lib/cookie";
+import Link from "next/link";
 
 export default async function UserDashboardPage() {
   const user = await getUserData();
@@ -13,24 +14,41 @@ export default async function UserDashboardPage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {[
-          { label: "Book a Ticket",   icon: "🎫", desc: "Search & book bus tickets",    href: "#" },
-          { label: "My Bookings",     icon: "📋", desc: "View your booking history",    href: "#" },
-          { label: "Update Profile",  icon: "👤", desc: "Edit your personal details",   href: "/user/profile" },
-        ].map((action) => (
-          <a
-            key={action.label}
-            href={action.href}
-            className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition
-                       hover:border-green-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
-          >
-            <span className="text-3xl">{action.icon}</span>
-            <h3 className="mt-3 font-semibold text-gray-900 group-hover:text-green-700 dark:text-white">
-              {action.label}
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">{action.desc}</p>
-          </a>
-        ))}
+        <Link
+          href="/booking/search"
+          className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition
+                     hover:border-green-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
+        >
+          <span className="text-3xl">🎫</span>
+          <h3 className="mt-3 font-semibold text-gray-900 group-hover:text-green-700 dark:text-white">
+            Book a Ticket
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">Search & book bus tickets</p>
+        </Link>
+
+        <a
+          href="#"
+          className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition
+                     hover:border-green-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
+        >
+          <span className="text-3xl">📋</span>
+          <h3 className="mt-3 font-semibold text-gray-900 group-hover:text-green-700 dark:text-white">
+            My Bookings
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">View your booking history</p>
+        </a>
+
+        <Link
+          href="/user/profile"
+          className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition
+                     hover:border-green-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
+        >
+          <span className="text-3xl">👤</span>
+          <h3 className="mt-3 font-semibold text-gray-900 group-hover:text-green-700 dark:text-white">
+            Update Profile
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">Edit your personal details</p>
+        </Link>
       </div>
 
       {/* Info Card */}
