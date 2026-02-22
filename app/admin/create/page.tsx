@@ -20,7 +20,7 @@ const busSchema = z.object({
   price: z.number().min(1, "Price must be greater than 0"),
   totalSeats: z.number().min(1).max(60),
   type: z.string().min(1, "Bus type is required"),
-  rating: z.number().min(0).max(5).default(4.0),
+  rating: z.number().min(0).max(5),
 });
 
 type BusFormData = z.infer<typeof busSchema>;
@@ -29,19 +29,22 @@ export default function CreateBusPage() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<BusFormData>({
+  const form = useForm<BusFormData>({
     resolver: zodResolver(busSchema),
     defaultValues: {
       totalSeats: 40,
       rating: 4.0,
+      name: "",
+      from: "",
+      to: "",
+      departureTime: "",
+      arrivalTime: "",
+      price: 0,
+      type: "",
     },
   });
 
-  const onSubmit = (data: BusFormData) => {
+  const onSubmit = form.handleSubmit((data) => {
     startTransition(async () => {
       const result = await handleCreateBus(data);
       if (!result.success) {
@@ -51,7 +54,7 @@ export default function CreateBusPage() {
       toast.success("Bus created successfully!");
       router.push("/admin/buses");
     });
-  };
+  });
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -61,7 +64,7 @@ export default function CreateBusPage() {
       </div>
 
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
         className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900"
       >
         <div className="space-y-6">
@@ -71,13 +74,15 @@ export default function CreateBusPage() {
               Bus Name
             </label>
             <input
-              {...register("name")}
+              {...form.register("name")}
               placeholder="e.g., Deluxe Express"
               className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                          focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                          dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             />
-            {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+            {form.formState.errors.name && (
+              <p className="mt-1 text-xs text-red-500">{form.formState.errors.name.message}</p>
+            )}
           </div>
 
           {/* Route */}
@@ -87,7 +92,7 @@ export default function CreateBusPage() {
                 From
               </label>
               <select
-                {...register("from")}
+                {...form.register("from")}
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                            dark:border-gray-600 dark:bg-gray-800 dark:text-white"
@@ -99,7 +104,9 @@ export default function CreateBusPage() {
                   </option>
                 ))}
               </select>
-              {errors.from && <p className="mt-1 text-xs text-red-500">{errors.from.message}</p>}
+              {form.formState.errors.from && (
+                <p className="mt-1 text-xs text-red-500">{form.formState.errors.from.message}</p>
+              )}
             </div>
 
             <div>
@@ -107,7 +114,7 @@ export default function CreateBusPage() {
                 To
               </label>
               <select
-                {...register("to")}
+                {...form.register("to")}
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                            dark:border-gray-600 dark:bg-gray-800 dark:text-white"
@@ -119,7 +126,9 @@ export default function CreateBusPage() {
                   </option>
                 ))}
               </select>
-              {errors.to && <p className="mt-1 text-xs text-red-500">{errors.to.message}</p>}
+              {form.formState.errors.to && (
+                <p className="mt-1 text-xs text-red-500">{form.formState.errors.to.message}</p>
+              )}
             </div>
           </div>
 
@@ -130,14 +139,16 @@ export default function CreateBusPage() {
                 Departure Time
               </label>
               <input
-                {...register("departureTime")}
+                {...form.register("departureTime")}
                 type="time"
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                            dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               />
-              {errors.departureTime && (
-                <p className="mt-1 text-xs text-red-500">{errors.departureTime.message}</p>
+              {form.formState.errors.departureTime && (
+                <p className="mt-1 text-xs text-red-500">
+                  {form.formState.errors.departureTime.message}
+                </p>
               )}
             </div>
 
@@ -146,14 +157,16 @@ export default function CreateBusPage() {
                 Arrival Time
               </label>
               <input
-                {...register("arrivalTime")}
+                {...form.register("arrivalTime")}
                 type="time"
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                            dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               />
-              {errors.arrivalTime && (
-                <p className="mt-1 text-xs text-red-500">{errors.arrivalTime.message}</p>
+              {form.formState.errors.arrivalTime && (
+                <p className="mt-1 text-xs text-red-500">
+                  {form.formState.errors.arrivalTime.message}
+                </p>
               )}
             </div>
           </div>
@@ -164,7 +177,7 @@ export default function CreateBusPage() {
               Bus Type
             </label>
             <select
-              {...register("type")}
+              {...form.register("type")}
               className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                          focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                          dark:border-gray-600 dark:bg-gray-800 dark:text-white"
@@ -176,7 +189,9 @@ export default function CreateBusPage() {
                 </option>
               ))}
             </select>
-            {errors.type && <p className="mt-1 text-xs text-red-500">{errors.type.message}</p>}
+            {form.formState.errors.type && (
+              <p className="mt-1 text-xs text-red-500">{form.formState.errors.type.message}</p>
+            )}
           </div>
 
           {/* Price & Seats */}
@@ -186,14 +201,16 @@ export default function CreateBusPage() {
                 Price (NPR)
               </label>
               <input
-                {...register("price", { valueAsNumber: true })}
+                {...form.register("price", { valueAsNumber: true })}
                 type="number"
                 placeholder="1500"
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                            dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               />
-              {errors.price && <p className="mt-1 text-xs text-red-500">{errors.price.message}</p>}
+              {form.formState.errors.price && (
+                <p className="mt-1 text-xs text-red-500">{form.formState.errors.price.message}</p>
+              )}
             </div>
 
             <div>
@@ -201,15 +218,17 @@ export default function CreateBusPage() {
                 Total Seats
               </label>
               <input
-                {...register("totalSeats", { valueAsNumber: true })}
+                {...form.register("totalSeats", { valueAsNumber: true })}
                 type="number"
                 placeholder="40"
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                            dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               />
-              {errors.totalSeats && (
-                <p className="mt-1 text-xs text-red-500">{errors.totalSeats.message}</p>
+              {form.formState.errors.totalSeats && (
+                <p className="mt-1 text-xs text-red-500">
+                  {form.formState.errors.totalSeats.message}
+                </p>
               )}
             </div>
           </div>
@@ -220,7 +239,7 @@ export default function CreateBusPage() {
               Rating (0-5)
             </label>
             <input
-              {...register("rating", { valueAsNumber: true })}
+              {...form.register("rating", { valueAsNumber: true })}
               type="number"
               step="0.1"
               min="0"
@@ -230,7 +249,9 @@ export default function CreateBusPage() {
                          focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500
                          dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             />
-            {errors.rating && <p className="mt-1 text-xs text-red-500">{errors.rating.message}</p>}
+            {form.formState.errors.rating && (
+              <p className="mt-1 text-xs text-red-500">{form.formState.errors.rating.message}</p>
+            )}
           </div>
 
           {/* Buttons */}

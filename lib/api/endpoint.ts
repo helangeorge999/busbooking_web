@@ -18,5 +18,6 @@ export const API = {
     USERS:       "/api/admin/users",
     DELETE_USER: (id: string) => `/api/admin/users/${id}`,
     UPDATE_USER: (id: string) => `/api/admin/users/${id}`,
+    BUSES:       "/api/admin/buses",
   },
 };
