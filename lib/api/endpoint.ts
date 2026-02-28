@@ -20,4 +20,18 @@ export const API = {
     UPDATE_USER: (id: string) => `/api/admin/users/${id}`,
     BUSES:       "/api/admin/buses",
   },
+  BUSES: {
+    GET_ALL:   "/api/admin/buses",
+    GET_BY_ID: (id: string) => `/api/admin/buses/${id}`,
+    CREATE:    "/api/admin/buses",
+    UPDATE:    (id: string) => `/api/admin/buses/${id}`,
+    DELETE:    (id: string) => `/api/admin/buses/${id}`,
+    SEARCH:    "/api/buses/search",
+  },
+  BOOKINGS: {
+    CREATE:      "/api/bookings",
+    MY_BOOKINGS: "/api/user/bookings",
+    GET_ALL:     "/api/admin/bookings",
+    CANCEL:      (id: string) => `/api/bookings/${id}/cancel`,
+  },
 };

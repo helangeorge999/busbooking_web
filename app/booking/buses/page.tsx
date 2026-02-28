@@ -1,3 +1,5 @@
+import { handleSearchBuses } from "@/lib/actions/admin/bus-action";
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -29,56 +31,22 @@ export default function BusListPage() {
   const to = params.get("to");
   const date = params.get("date");
 
-  useEffect(() => {
-    // Mock data - replace with API call
-    setTimeout(() => {
-      setBuses([
-        {
-          id: "bus1",
-          name: "Deluxe Express",
-          from: from!,
-          to: to!,
-          departureTime: "06:00 AM",
-          arrivalTime: "02:00 PM",
-          duration: "8h",
-          price: 1500,
-          availableSeats: 25,
-          totalSeats: 40,
-          type: "AC Sleeper",
-          rating: 4.5,
-        },
-        {
-          id: "bus2",
-          name: "Super Comfort",
-          from: from!,
-          to: to!,
-          departureTime: "08:30 AM",
-          arrivalTime: "04:30 PM",
-          duration: "8h",
-          price: 1200,
-          availableSeats: 18,
-          totalSeats: 40,
-          type: "AC Semi-Sleeper",
-          rating: 4.3,
-        },
-        {
-          id: "bus3",
-          name: "Night Rider",
-          from: from!,
-          to: to!,
-          departureTime: "10:00 PM",
-          arrivalTime: "06:00 AM",
-          duration: "8h",
-          price: 1800,
-          availableSeats: 30,
-          totalSeats: 40,
-          type: "AC Sleeper Luxury",
-          rating: 4.7,
-        },
-      ]);
+ useEffect(() => {
+  const fetchBuses = async () => {
+    if (!from || !to) {
       setLoading(false);
-    }, 1000);
-  }, [from, to]);
+      return;
+    }
+    
+    const result = await handleSearchBuses(from, to);
+    if (result.success) {
+      setBuses(result.data);
+    }
+    setLoading(false);
+  };
+  
+  fetchBuses();
+}, [from, to]);
 
   const handleSelectBus = (bus: Bus) => {
     if (bus.availableSeats === 0) {

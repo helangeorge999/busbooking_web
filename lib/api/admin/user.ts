@@ -3,7 +3,7 @@ import axios from "../axios";
 export const createUser = async (userData: any) => {
     try {
         const response = await axios.post(
-            API.ADMIN.USER.CREATE,
+            API.ADMIN.USERS,
             userData,
             {
                 headers: {

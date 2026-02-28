@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -26,6 +26,7 @@ body {
 }
 
 /* Explicit theme overrides via data attribute */
+/*
 [data-theme="light"] {
   --background: #ffffff;
   --foreground: #171717;
@@ -34,4 +35,9 @@ body {
 [data-theme="dark"] {
   --background: #0a0a0a;
   --foreground: #ededed;
-}
+} */ 
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

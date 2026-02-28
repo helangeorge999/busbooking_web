@@ -24,7 +24,7 @@ export default function AdminHeader() {
                        text-gray-700 transition hover:bg-gray-100 dark:border-gray-700
                        dark:text-gray-300 dark:hover:bg-gray-800"
           >
-            Logout
+            Logout+
           </button>
         </div>
       </div>

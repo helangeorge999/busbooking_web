@@ -3,13 +3,20 @@
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { handleCreateBooking } from "@/lib/actions/booking-action";
 
 export default function ConfirmationPage() {
   const router = useRouter();
   const params = useSearchParams();
   const [pending, startTransition] = useTransition();
   const [agreed, setAgreed] = useState(false);
+  
+  // Form state for passenger info
+  const [passengerName, setPassengerName] = useState("");
+  const [passengerPhone, setPassengerPhone] = useState("");
+  const [passengerEmail, setPassengerEmail] = useState("");
 
+  const busId = params.get("busId");
   const busName = params.get("busName");
   const from = params.get("from");
   const to = params.get("to");
@@ -23,11 +30,33 @@ export default function ConfirmationPage() {
       return;
     }
 
-    startTransition(async () => {
-      // Mock API call - replace with actual booking
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (!passengerName || !passengerPhone || !passengerEmail) {
+      toast.error("Please fill all passenger information");
+      return;
+    }
 
-      const bookingId = `BK${Date.now()}`;
+    startTransition(async () => {
+      const bookingData = {
+        busId: busId,
+        from: from,
+        to: to,
+        travelDate: date,
+        seats: seats,
+        totalAmount: Number(total),
+        passengerName,
+        passengerPhone,
+        passengerEmail,
+      };
+
+      const result = await handleCreateBooking(bookingData);
+      
+      if (!result.success) {
+        toast.error(result.message || "Booking failed");
+        return;
+      }
+
+      const bookingId = result.data?.bookingId || `BK${Date.now()}`;
+      toast.success("Booking confirmed!");
       router.push(
         `/booking/ticket?bookingId=${bookingId}&busName=${busName}&from=${from}&to=${to}&date=${date}&seats=${seats}&total=${total}`
       );
@@ -97,6 +126,8 @@ export default function ConfirmationPage() {
               </label>
               <input
                 type="text"
+                value={passengerName}
+                onChange={(e) => setPassengerName(e.target.value)}
                 placeholder="Enter passenger name"
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
@@ -109,6 +140,8 @@ export default function ConfirmationPage() {
               </label>
               <input
                 type="tel"
+                value={passengerPhone}
+                onChange={(e) => setPassengerPhone(e.target.value)}
                 placeholder="Enter phone number"
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
@@ -119,6 +152,8 @@ export default function ConfirmationPage() {
               <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
+                value={passengerEmail}
+                onChange={(e) => setPassengerEmail(e.target.value)}
                 placeholder="Enter email address"
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                            focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"

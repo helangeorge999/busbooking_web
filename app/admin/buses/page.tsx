@@ -1,5 +1,6 @@
 import { handleGetAllBuses } from "@/lib/actions/admin/bus-action";
 import Link from "next/link";
+import DeleteBusButton from "./_components/DeleteBusButton";
 
 export default async function AdminBusesPage() {
   const result = await handleGetAllBuses();
@@ -86,12 +87,7 @@ export default async function AdminBusesPage() {
                   >
                     Edit
                   </Link>
-                  <button
-                    className="rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-600
-                               hover:bg-red-100"
-                  >
-                    Delete
-                  </button>
+                  <DeleteBusButton busId={bus._id} busName={bus.name} />
                 </div>
               </div>
             </div>
