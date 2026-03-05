@@ -4,7 +4,28 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-const CITIES = ["Kathmandu", "Pokhara", "Nepalgunj"];
+const CITIES = [
+  "Kathmandu",
+  "Pokhara",
+  "Biratnagar",
+  "Birgunj",
+  "Bharatpur",
+  "Janakpur",
+  "Butwal",
+  "Dharan",
+  "Hetauda",
+  "Nepalgunj",
+  "Dhangadhi",
+  "Itahari",
+  "Banepa",
+  "Dhulikhel",
+  "Bhaktapur",
+  "Lalitpur",
+  "Gorkha",
+  "Besisahar",
+  "Mugling",
+  "Narayanghat",
+];
 
 export default function SearchBusPage() {
   const router = useRouter();

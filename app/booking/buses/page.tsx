@@ -1,13 +1,12 @@
-import { handleSearchBuses } from "@/lib/actions/admin/bus-action";
-
 "use client";
 
+import { handleSearchBuses } from "@/lib/actions/admin/bus-action";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
 interface Bus {
-  id: string;
+  _id: string;
   name: string;
   from: string;
   to: string;
@@ -53,7 +52,7 @@ export default function BusListPage() {
       toast.error("No seats available");
       return;
     }
-    router.push(`/booking/seats?busId=${bus.id}&from=${from}&to=${to}&date=${date}&price=${bus.price}&busName=${bus.name}`);
+    router.push(`/booking/seats?busId=${bus._id}&from=${from}&to=${to}&date=${date}&price=${bus.price}&busName=${bus.name}`);
   };
 
   if (loading) {
@@ -92,7 +91,7 @@ export default function BusListPage() {
         <div className="space-y-4">
           {buses.map((bus) => (
             <div
-              key={bus.id}
+              key={bus._id}
               className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
             >
               <div className="flex items-start justify-between">

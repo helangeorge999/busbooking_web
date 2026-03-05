@@ -8,7 +8,28 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 import { handleCreateBus } from "@/lib/actions/admin/bus-action";
 
-const CITIES = ["Kathmandu", "Pokhara", "Nepalgunj"];
+const CITIES = [
+  "Kathmandu",
+  "Pokhara",
+  "Biratnagar",
+  "Birgunj",
+  "Bharatpur",
+  "Janakpur",
+  "Butwal",
+  "Dharan",
+  "Hetauda",
+  "Nepalgunj",
+  "Dhangadhi",
+  "Itahari",
+  "Banepa",
+  "Dhulikhel",
+  "Bhaktapur",
+  "Lalitpur",
+  "Gorkha",
+  "Besisahar",
+  "Mugling",
+  "Narayanghat",
+];
 const BUS_TYPES = ["AC Sleeper", "AC Semi-Sleeper", "Non-AC Sleeper", "AC Seater", "Non-AC Seater"];
 
 const busSchema = z.object({
