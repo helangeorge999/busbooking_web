@@ -1,8 +1,24 @@
 import { handleGetAllUsers } from "@/lib/actions/admin/user-action";
+import { handleGetAllBookings } from "@/lib/actions/booking-action";
+import { handleGetAllBuses } from "@/lib/actions/admin/bus-action";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const result = await handleGetAllUsers();
-  const users  = result.data ?? [];
+  const [usersResult, bookingsResult, busesResult] = await Promise.all([
+    handleGetAllUsers(),
+    handleGetAllBookings(),
+    handleGetAllBuses(),
+  ]);
+  const users    = usersResult.data ?? [];
+  const bookings = bookingsResult.data ?? [];
+  const buses    = busesResult.data ?? [];
+
+  const today = new Date().toISOString().split("T")[0];
+  const bookingsToday = bookings.filter((b: any) => {
+    const created = b.createdAt?.split("T")[0] || b.travelDate?.split("T")[0];
+    return created === today;
+  });
 
   return (
     <div className="space-y-6">
@@ -14,9 +30,9 @@ export default async function AdminDashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
-          { label: "Total Users",    value: users.length, icon: "👥", color: "bg-blue-50 text-blue-700"    },
-          { label: "Active Routes",  value: 12,           icon: "🛣️", color: "bg-green-50 text-green-700"  },
-          { label: "Bookings Today", value: 0,            icon: "🎫", color: "bg-yellow-50 text-yellow-700" },
+          { label: "Total Users",    value: users.length,         icon: "👥", color: "bg-blue-50 text-blue-700"    },
+          { label: "Total Buses",    value: buses.length,         icon: "🚌", color: "bg-green-50 text-green-700"  },
+          { label: "Bookings Today", value: bookingsToday.length, icon: "🎫", color: "bg-yellow-50 text-yellow-700" },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900">
             <div className="flex items-center justify-between">

@@ -263,13 +263,13 @@ export default function SettingsPage() {
             </div>
             <button
               onClick={toggleTheme}
-              className={`relative h-7 w-12 rounded-full transition-colors ${
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 darkMode ? "bg-green-600" : "bg-gray-300"
               }`}
             >
               <span
-                className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${
-                  darkMode ? "translate-x-5" : "translate-x-0.5"
+                className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
+                  darkMode ? "translate-x-6" : "translate-x-1"
                 }`}
               />
             </button>
