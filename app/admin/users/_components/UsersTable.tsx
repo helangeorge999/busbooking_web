@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { handleDeleteUser } from "@/lib/actions/admin/user-action";
+import { handleDeleteUser, handleAdminResetPassword } from "@/lib/actions/admin/user-action";
 import { toast } from "react-toastify";
 
 export default function UsersTable({ initialUsers }: { initialUsers: any[] }) {
@@ -22,6 +22,23 @@ export default function UsersTable({ initialUsers }: { initialUsers: any[] }) {
       if (res.success) {
         setUsers((prev) => prev.filter((u) => u._id !== userId));
         toast.success("User deleted");
+      } else {
+        toast.error(res.message);
+      }
+    });
+  };
+
+  const onResetPassword = (userId: string, userName: string) => {
+    const newPassword = prompt(`Enter new password for ${userName}:`);
+    if (!newPassword) return;
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    startTransition(async () => {
+      const res = await handleAdminResetPassword(userId, newPassword);
+      if (res.success) {
+        toast.success(res.message);
       } else {
         toast.error(res.message);
       }
@@ -68,7 +85,22 @@ export default function UsersTable({ initialUsers }: { initialUsers: any[] }) {
                 <td className="px-5 py-3 capitalize text-gray-600 dark:text-gray-400">
                   {user.gender ?? "—"}
                 </td>
-                <td className="px-5 py-3">
+                <td className="flex gap-2 px-5 py-3">
+                  <a
+                    href={`/admin/users/${user._id}/edit`}
+                    className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600
+                               hover:bg-blue-100"
+                  >
+                    Edit
+                  </a>
+                  <button
+                    onClick={() => onResetPassword(user._id, user.name)}
+                    disabled={pending}
+                    className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-600
+                               hover:bg-amber-100 disabled:opacity-50"
+                  >
+                    Reset Password
+                  </button>
                   <button
                     onClick={() => onDelete(user._id)}
                     disabled={pending}

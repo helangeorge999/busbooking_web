@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const NAV = [
   { href: "/user/dashboard", label: "Dashboard" },
   { href: "/user/profile",   label: "Profile"   },
+  { href: "/user/settings",  label: "Settings"  },
 ];
 
 export default function UserHeader() {
