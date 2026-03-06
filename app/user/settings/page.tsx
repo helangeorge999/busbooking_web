@@ -26,9 +26,10 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("theme");
-    const isDark = stored === "dark";
+    const isDark =
+      stored === "dark" ||
+      (stored !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
     setDarkMode(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
   const toggleTheme = () => {

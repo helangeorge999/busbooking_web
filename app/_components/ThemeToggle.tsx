@@ -15,16 +15,11 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     const root = document.documentElement;
-    const apply = (t: Theme) => {
-      if (t === "system") {
-        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        root.setAttribute("data-theme", prefersDark ? "dark" : "light");
-      } else {
-        root.setAttribute("data-theme", t);
-      }
-    };
+    const isDark =
+      theme === "dark" ||
+      (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-    apply(theme);
+    root.classList.toggle("dark", isDark);
     localStorage.setItem("theme", theme);
   }, [theme]);
 

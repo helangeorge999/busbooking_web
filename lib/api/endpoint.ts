@@ -33,8 +33,8 @@ export const API = {
   },
   BOOKINGS: {
     CREATE:      "/api/bookings",
-    MY_BOOKINGS: "/api/user/bookings",
-    GET_ALL:     "/api/admin/bookings",
+    MY_BOOKINGS: "/api/bookings/my-bookings",
+    GET_ALL:     "/api/bookings",
     CANCEL:      (id: string) => `/api/bookings/${id}/cancel`,
   },
 };

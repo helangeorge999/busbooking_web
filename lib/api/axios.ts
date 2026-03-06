@@ -12,6 +12,7 @@ const axiosInstance = axios.create({
 // Attach JWT from cookie as Authorization header on every request
 axiosInstance.interceptors.request.use(async (config) => {
   const token = await getAuthToken();
+  console.log("🔑 Auth token present:", !!token, token ? `${token.substring(0, 20)}...` : "null");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

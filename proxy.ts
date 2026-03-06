@@ -15,6 +15,11 @@ export function proxy(req: NextRequest) {
     );
   }
 
+  // Protect /booking/confirmation and /booking/ticket (require login to book)
+  if (pathname.startsWith("/booking/confirmation") || pathname.startsWith("/booking/ticket")) {
+    if (!token) return NextResponse.redirect(new URL("/login", req.url));
+  }
+
   // Protect /user/* routes
   if (pathname.startsWith("/user")) {
     if (!token) return NextResponse.redirect(new URL("/login", req.url));
@@ -31,5 +36,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/user/:path*", "/admin/:path*", "/login", "/register"],
+  matcher: ["/user/:path*", "/admin/:path*", "/login", "/register", "/booking/confirmation", "/booking/ticket"],
 };
