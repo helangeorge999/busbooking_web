@@ -13,7 +13,7 @@ export default async function UserDashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link
           href="/booking/search"
           className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition
@@ -26,8 +26,8 @@ export default async function UserDashboardPage() {
           <p className="mt-1 text-sm text-gray-500">Search & book bus tickets</p>
         </Link>
 
-        <a
-          href="#"
+        <Link
+          href="/user/bookings"
           className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition
                      hover:border-green-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
         >
@@ -36,7 +36,7 @@ export default async function UserDashboardPage() {
             My Bookings
           </h3>
           <p className="mt-1 text-sm text-gray-500">View your booking history</p>
-        </a>
+        </Link>
 
         <Link
           href="/user/profile"
@@ -48,6 +48,18 @@ export default async function UserDashboardPage() {
             Update Profile
           </h3>
           <p className="mt-1 text-sm text-gray-500">Edit your personal details</p>
+        </Link>
+
+        <Link
+          href="/user/settings"
+          className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition
+                     hover:border-green-400 hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
+        >
+          <span className="text-3xl">⚙️</span>
+          <h3 className="mt-3 font-semibold text-gray-900 group-hover:text-green-700 dark:text-white">
+            Settings
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">Password, theme & preferences</p>
         </Link>
       </div>
 

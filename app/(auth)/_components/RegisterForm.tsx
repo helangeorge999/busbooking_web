@@ -3,15 +3,49 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterData, registerSchema } from "../schema";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { registerAction } from "@/lib/actions/auth-action";
 import { toast } from "react-toastify";
 
+const COUNTRY_CODES = [
+  { code: "+977", flag: "🇳🇵", name: "Nepal" },
+  { code: "+91",  flag: "🇮🇳", name: "India" },
+  { code: "+1",   flag: "🇺🇸", name: "USA" },
+  { code: "+44",  flag: "🇬🇧", name: "UK" },
+  { code: "+61",  flag: "🇦🇺", name: "Australia" },
+  { code: "+86",  flag: "🇨🇳", name: "China" },
+  { code: "+81",  flag: "🇯🇵", name: "Japan" },
+  { code: "+82",  flag: "🇰🇷", name: "South Korea" },
+  { code: "+49",  flag: "🇩🇪", name: "Germany" },
+  { code: "+33",  flag: "🇫🇷", name: "France" },
+  { code: "+971", flag: "🇦🇪", name: "UAE" },
+  { code: "+966", flag: "🇸🇦", name: "Saudi Arabia" },
+  { code: "+974", flag: "🇶🇦", name: "Qatar" },
+  { code: "+60",  flag: "🇲🇾", name: "Malaysia" },
+  { code: "+65",  flag: "🇸🇬", name: "Singapore" },
+  { code: "+880", flag: "🇧🇩", name: "Bangladesh" },
+  { code: "+92",  flag: "🇵🇰", name: "Pakistan" },
+  { code: "+94",  flag: "🇱🇰", name: "Sri Lanka" },
+  { code: "+55",  flag: "🇧🇷", name: "Brazil" },
+  { code: "+27",  flag: "🇿🇦", name: "South Africa" },
+  { code: "+234", flag: "🇳🇬", name: "Nigeria" },
+  { code: "+254", flag: "🇰🇪", name: "Kenya" },
+  { code: "+39",  flag: "🇮🇹", name: "Italy" },
+  { code: "+34",  flag: "🇪🇸", name: "Spain" },
+  { code: "+7",   flag: "🇷🇺", name: "Russia" },
+  { code: "+62",  flag: "🇮🇩", name: "Indonesia" },
+  { code: "+66",  flag: "🇹🇭", name: "Thailand" },
+  { code: "+63",  flag: "🇵🇭", name: "Philippines" },
+  { code: "+84",  flag: "🇻🇳", name: "Vietnam" },
+  { code: "+52",  flag: "🇲🇽", name: "Mexico" },
+];
+
 export default function RegisterForm() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [countryCode, setCountryCode] = useState("+977");
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterData>({
     resolver: zodResolver(registerSchema),
@@ -20,7 +54,8 @@ export default function RegisterForm() {
 
   const submit = (values: RegisterData) => {
     startTransition(async () => {
-      const result = await registerAction(values);
+      const fullPhone = `${countryCode} ${values.phone}`;
+      const result = await registerAction({ ...values, phone: fullPhone });
       if (!result.success) {
         toast.error(result.message || "Registration failed");
         return;
@@ -53,7 +88,7 @@ export default function RegisterForm() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">👤</span>
                 <input
                   {...register("name")}
-                  placeholder="John Doe"
+                  placeholder="Your full name"
                   className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm
                              focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
                 />
@@ -113,13 +148,24 @@ export default function RegisterForm() {
             {/* Phone */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">Phone Number</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">📞</span>
+              <div className="flex gap-2">
+                <select
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  className="h-11 w-[120px] shrink-0 rounded-lg border border-gray-300 px-2 text-sm text-gray-700
+                             focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                >
+                  {COUNTRY_CODES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.flag} {c.code}
+                    </option>
+                  ))}
+                </select>
                 <input
                   {...register("phone")}
                   type="tel"
-                  placeholder="+91 98765 43210"
-                  className="h-11 w-full rounded-lg border border-gray-300 pl-10 pr-4 text-sm
+                  placeholder="98765 43210"
+                  className="h-11 w-full rounded-lg border border-gray-300 px-4 text-sm
                              focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
                 />
               </div>

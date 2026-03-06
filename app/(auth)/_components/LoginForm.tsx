@@ -107,6 +107,17 @@ export default function LoginForm() {
               {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
             </div>
 
+            {!isAdmin && (
+              <div className="text-right">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-green-600 hover:text-green-700 hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={pending}

@@ -52,7 +52,7 @@ export default function BusListPage() {
       toast.error("No seats available");
       return;
     }
-    router.push(`/booking/seats?busId=${bus._id}&from=${from}&to=${to}&date=${date}&price=${bus.price}&busName=${bus.name}`);
+    router.push(`/booking/seats?busId=${bus._id}&from=${from}&to=${to}&date=${date}&price=${bus.price}&busName=${bus.name}&totalSeats=${bus.totalSeats}`);
   };
 
   if (loading) {
