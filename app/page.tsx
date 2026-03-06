@@ -1,14 +1,5 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Link
-        href="/dashboard"
-        className="rounded-md bg-blue-600 px-6 py-3 text-white"
-      >
-        Continue...
-      </Link>
-    </div>
-  );
+  redirect("/login");
 }
