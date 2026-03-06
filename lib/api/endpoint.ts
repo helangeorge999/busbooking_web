@@ -35,6 +35,7 @@ export const API = {
     CREATE:      "/api/bookings",
     MY_BOOKINGS: "/api/bookings/my-bookings",
     GET_ALL:     "/api/bookings",
+    BOOKED_SEATS: "/api/bookings/booked-seats",
     CANCEL:      (id: string) => `/api/bookings/${id}/cancel`,
   },
 };

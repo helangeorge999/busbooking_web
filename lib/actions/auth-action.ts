@@ -58,7 +58,11 @@ export const registerAction = async (values: {
 
 export const handleWhoAmI = async () => {
   try {
-    const res = await axios.get(API.AUTH.WHOAMI);
+    const { getAuthToken } = await import("@/lib/cookie");
+    const token = await getAuthToken();
+    const res = await axios.get(API.AUTH.WHOAMI, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     return { success: true, data: res.data };
   } catch {
     return { success: false, data: null };
@@ -81,7 +85,11 @@ export const handleChangePassword = async (values: {
   newPassword: string;
 }) => {
   try {
-    const res = await axios.post(API.USER.CHANGE_PASSWORD, values);
+    const { getAuthToken } = await import("@/lib/cookie");
+    const token = await getAuthToken();
+    const res = await axios.post(API.USER.CHANGE_PASSWORD, values, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     return { success: true, message: res.data?.message || "Password changed successfully" };
   } catch (error: any) {
     return {
@@ -121,14 +129,16 @@ export const handleResetPassword = async (values: {
 
 export const handleUpdateProfile = async (values: any) => {
   try {
+    const { getAuthToken } = await import("@/lib/cookie");
+    const token = await getAuthToken();
     const { userId, ...profileData } = values;
-    
-    // Send userId as query parameter, not in body
+
     const res = await axios.patch(
       `${API.USER.UPDATE_PROFILE}?userId=${userId}`,
-      profileData
+      profileData,
+      { headers: token ? { Authorization: `Bearer ${token}` } : {} },
     );
-    
+
     if (res.data?.data) await setUserData(res.data.data);
     return { success: true, data: res.data };
   } catch (error: any) {
