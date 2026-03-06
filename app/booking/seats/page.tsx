@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { handleGetBookedSeats } from "@/lib/actions/booking-action";
 
 type SeatStatus = "available" | "booked" | "selected";
 
@@ -15,6 +16,7 @@ interface Seat {
 export default function SeatSelectionPage() {
   const router = useRouter();
   const params = useSearchParams();
+  const [, startTransition] = useTransition();
 
   const busId = params.get("busId");
   const from = params.get("from");
@@ -22,19 +24,30 @@ export default function SeatSelectionPage() {
   const date = params.get("date");
   const price = params.get("price");
   const busName = params.get("busName");
+  const totalSeats = Number(params.get("totalSeats")) || 40;
 
-  // Mock seat data - replace with API
-  const [seats, setSeats] = useState<Seat[]>(() => {
-    const initialSeats: Seat[] = [];
-    for (let i = 1; i <= 40; i++) {
-      initialSeats.push({
-        id: `seat-${i}`,
-        number: i,
-        status: [3, 7, 12, 18, 25, 31].includes(i) ? "booked" : "available",
-      });
-    }
-    return initialSeats;
-  });
+  const [seats, setSeats] = useState<Seat[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!busId || !date) return;
+
+    startTransition(async () => {
+      const result = await handleGetBookedSeats(busId, date);
+      const bookedSeatNumbers = result.data ?? [];
+
+      const initialSeats: Seat[] = [];
+      for (let i = 1; i <= totalSeats; i++) {
+        initialSeats.push({
+          id: `seat-${i}`,
+          number: i,
+          status: bookedSeatNumbers.includes(i) ? "booked" : "available",
+        });
+      }
+      setSeats(initialSeats);
+      setIsLoading(false);
+    });
+  }, [busId, date, totalSeats]);
 
   const selectedSeats = seats.filter((s) => s.status === "selected");
   const totalPrice = selectedSeats.length * Number(price);
@@ -93,6 +106,14 @@ export default function SeatSelectionPage() {
           <p className="text-gray-600">{busName}</p>
         </div>
 
+        {isLoading ? (
+          <div className="flex items-center justify-center rounded-xl bg-white p-16 shadow">
+            <div className="text-center">
+              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-green-200 border-t-green-600" />
+              <p className="mt-4 text-sm text-gray-500">Loading seat availability...</p>
+            </div>
+          </div>
+        ) : (
         <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
           {/* Seat Map */}
           <div className="rounded-xl bg-white p-6 shadow">
@@ -174,6 +195,7 @@ export default function SeatSelectionPage() {
             </button>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

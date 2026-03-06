@@ -17,6 +17,7 @@ export default async function AdminBookingsPage() {
             <thead className="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-800">
               <tr>
                 <th className="px-5 py-3">Booking ID</th>
+                <th className="px-5 py-3">User</th>
                 <th className="px-5 py-3">Passenger</th>
                 <th className="px-5 py-3">Route</th>
                 <th className="px-5 py-3">Travel Date</th>
@@ -34,9 +35,20 @@ export default async function AdminBookingsPage() {
                   <td className="px-5 py-3">
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">
-                        {booking.passengerName}
+                        {booking.userId?.name || "—"}
                       </p>
-                      <p className="text-xs text-gray-500">{booking.passengerEmail}</p>
+                      <p className="text-xs text-gray-500">{booking.userId?.email || "—"}</p>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3">
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {booking.passengerName || "—"}
+                      </p>
+                      <p className="text-xs text-gray-500">{booking.passengerEmail || "—"}</p>
+                      {booking.passengerPhone && (
+                        <p className="text-xs text-gray-500">{booking.passengerPhone}</p>
+                      )}
                     </div>
                   </td>
                   <td className="px-5 py-3 text-gray-600 dark:text-gray-400">
@@ -66,7 +78,7 @@ export default async function AdminBookingsPage() {
               ))}
               {bookings.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-5 py-8 text-center text-gray-400">
+                  <td colSpan={8} className="px-5 py-8 text-center text-gray-400">
                     No bookings yet.
                   </td>
                 </tr>

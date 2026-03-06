@@ -30,6 +30,21 @@ export const handleGetMyBookings = async () => {
   }
 };
 
+export const handleGetBookedSeats = async (busId: string, travelDate: string) => {
+  try {
+    const res = await axios.get(API.BOOKINGS.BOOKED_SEATS, {
+      params: { busId, travelDate },
+    });
+    return { success: true, data: res.data.data as number[] };
+  } catch (error: any) {
+    return {
+      success: false,
+      data: [] as number[],
+      message: error.response?.data?.message || "Failed to fetch booked seats",
+    };
+  }
+};
+
 export const handleGetAllBookings = async () => {
   try {
     const res = await axios.get(API.BOOKINGS.GET_ALL);

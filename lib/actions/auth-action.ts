@@ -76,6 +76,49 @@ export const handleLogout = async () => {
   }
 };
 
+export const handleChangePassword = async (values: {
+  currentPassword: string;
+  newPassword: string;
+}) => {
+  try {
+    const res = await axios.post(API.USER.CHANGE_PASSWORD, values);
+    return { success: true, message: res.data?.message || "Password changed successfully" };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to change password.",
+    };
+  }
+};
+
+export const handleForgotPassword = async (email: string) => {
+  try {
+    const res = await axios.post(API.AUTH.FORGOT_PASSWORD, { email });
+    return { success: true, data: res.data };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to send reset request.",
+    };
+  }
+};
+
+export const handleResetPassword = async (values: {
+  email: string;
+  otp: string;
+  newPassword: string;
+}) => {
+  try {
+    const res = await axios.post(API.AUTH.RESET_PASSWORD, values);
+    return { success: true, message: res.data?.message || "Password reset successfully" };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to reset password.",
+    };
+  }
+};
+
 export const handleUpdateProfile = async (values: any) => {
   try {
     const { userId, ...profileData } = values;
